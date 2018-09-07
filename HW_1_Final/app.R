@@ -26,3 +26,36 @@ cars.load$model <- as.factor(cars.load$model)  # turn model into a factor
 carnames <- as.character(unique(cars.load$model))  # create vector with car names
 
 pdf(NULL)
+
+# Define UI for application that draws a histogram
+ui <- navbarPage("Cars NavBar", 
+                 tabPanel("Plot",
+                          sidebarLayout(
+                            sidebarPanel(
+                              selectInput("modelSelect",  # input slot used to access the value
+                                          "Model:",  # choice interface label
+                                          choices = levels(cars.load$model),  # inputs user selects
+                                          multiple = TRUE,  # allows user to select multiple inputs
+                                          selectize = TRUE,  # hybrid text box and select box 
+                                          selected = carnames[1:32]),  # default inputs selected, here all
+                              sliderInput("hpSelect",  # input slot used to access the value
+                                          "Horsepower:",  # choice interface label
+                                          min = min(cars.load$hp, na.rm = T),  # min value that can be selected
+                                          max = max(cars.load$hp, na.rm = T),  # max value that can be selected
+                                          value = c(min(cars.load$hp, na.rm = T),  # default range selected
+                                                    max(cars.load$hp, na.rm = T)),
+                                          step = 1)  # interval between selectable values
+                            ),
+                            # Output plot
+                            mainPanel(  # output elements included in main panel
+                              plotlyOutput("plot")
+                            )
+                          )
+                 ),
+                 # Data Table
+                 tabPanel("Table",  # output elements included in table panel
+                          fluidPage(DT::dataTableOutput("table"))
+                 )
+)
+
+
