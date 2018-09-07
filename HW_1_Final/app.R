@@ -58,4 +58,21 @@ ui <- navbarPage("Cars NavBar",
                  )
 )
 
+# Define server logic
+server <- function(input, output) {
+  carsInput <- reactive({  # function that creates reactive expression, or one that will change over time
+    cars <- cars.load %>%  # load cars data to reactive expression
+      filter(hp >= input$hpSelect[1] & hp <= input$hpSelect[2])  # filters cars data by slider inputs
+    
+    if (length(input$modelSelect) > 0 ) {  # protects against null input values
+      cars <- subset(cars, model %in% input$modelSelect)
+    }
+    
+    return(cars)
+  })
+  mwInput <- reactive({
+    carsInput() %>%
+      melt(id = "model")
+  })
+  
 
