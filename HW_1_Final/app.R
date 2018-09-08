@@ -25,6 +25,8 @@ cars.load$wt <- cars.load$wt*1000  # convert weight to thousands
 cars.load$model <- as.factor(cars.load$model)  # turn model into a factor
 carnames <- as.character(unique(cars.load$model))  # create vector with car names
 
+# Good I used to clean data this way, in the future you might want to use the magic of the dplyr package and pipes to clean your data.
+
 pdf(NULL)
 
 # Define UI for application that draws a histogram
@@ -37,6 +39,7 @@ ui <- navbarPage("Cars NavBar",
                                           choices = levels(cars.load$model),  # inputs user selects
                                           multiple = TRUE,  # allows user to select multiple inputs
                                           selectize = TRUE,  # hybrid text box and select box 
+                                          # You didn't have to do this because of the if() statement in your reactive dataset.
                                           selected = carnames[1:32]),  # default inputs selected, here all
                               sliderInput("hpSelect",  # input slot used to access the value
                                           "Horsepower:",  # choice interface label
@@ -114,9 +117,10 @@ server <- function(input, output) {
     
     subset(cars, select = c(model, mpg, cyl, hp, wt))  # select features to include in data table
   })
-  observe({
-    print(reactiveValuesToList(input))
-  })
+  # Commenting out something like this once you're done debugging your app will (marginally) improve the performance of your app. No pts removed
+  # observe({
+  #   print(reactiveValuesToList(input))
+  # })
 }
 
 # Run the application 
